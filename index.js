@@ -1,4 +1,6 @@
-hexo.extend.generator.register('cjh_url_generator', require('./lib/generator'));
-hexo.extend.deployer.register('cjh_baidu_url_submitter', require('./lib/baidu_submitter'));
-hexo.extend.deployer.register('cjh_bing_url_submitter', require('./lib/bing_submitter'));
-hexo.extend.deployer.register('cjh_google_url_submitter', require('./lib/google_submitter'));
+const config = hexo.config.search_engine_submit;
+
+if (config?.enable) {
+    hexo.extend.generator.register('submit_url_generator', require('./src/generator'));
+    hexo.extend.deployer.register('search_engine_submit', require('./src/deployer'));
+}

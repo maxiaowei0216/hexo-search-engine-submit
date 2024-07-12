@@ -1,14 +1,14 @@
 {
-  "name": "hexo-submit-urls-to-search-engine",
-  "version": "2.1.0",
-  "description": "Submit new posts urls to Google,Bing,Baidu search engine to improve the quality and speed of website collection",
+  "name": "hexo-search-engine-submit",
+  "version": "1.0.0",
+  "description": "A Hexo plugin to submit site URLs to search engines",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cjh0613/hexo-submit-urls-to-search-engine.git"
+    "url": "https://github.com/maxiaowei0216/hexo-search-engine-submit.git"
   },
   "keywords": [
     "hexo",
@@ -16,18 +16,16 @@
     "google",
     "bing",
     "baidu",
-    "url",
-    "submit",
-    "seo"
+    "seo",
+    "url"
   ],
   "author": {
-    "name": "CJH-Bruce",
-    "url": "https://en.cjh0613.com/"
+    "name": "Ma Xiaowei",
+    "url": "https://blog.akia.top"
   },
   "license": "GPL-3.0-only",
   "dependencies": {
-    "xmlhttprequest": "^1.8.0",
-    "request": "^2.88.2",
-    "googleapis": "^52.1.0"
+    "axios": "^1.7.2",
+    "googleapis": "^140.0.1"
   }
 }
