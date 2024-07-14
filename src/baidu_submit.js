@@ -1,39 +1,40 @@
 const axios = require('axios');
+const SearchEngineBase = require('./searchengine');
 
+class Baidu extends SearchEngineBase {
+    constructor(log, config, urls) {
+        super(log, config, urls);
+    }
 
-async function BaiduMain(hexo) {
-    const log = hexo.log;
-    const config = hexo.config.search_engine_submit;
+    async submit(host) {
+        let { token, count } = this.config;
+        token = token ?? process.env.BAIDU_TOKEN;
+        count = count ?? this.count;
 
-    let { token, count } = config.baidu;
-    token = token || process.env.BAIDU_TOKEN;
-    if (count > 0) {
-        const data = hexo.config.submit_urls;
-        log.info("===== Submitting Baidu urls start. =====");
+        if (count > 0) {
+            this.log.info("===== Submitting Baidu urls start. =====");
 
-        const parsedUrl = new URL(hexo.config.url);
-        const host = parsedUrl.origin;
-        const postData = data.join('\n');
-
-        try {
-            const resp = await axios.post(
-                `http://data.zz.baidu.com/urls?site=${host}&token=${token}`,
-                postData,
-                {
-                    headers: {
-                        'Content-Type': 'text/plain'
+            try {
+                const postData = this.urls.join('\n');
+                const resp = await axios.post(
+                    `http://data.zz.baidu.com/urls?site=${host}&token=${token}`,
+                    postData,
+                    {
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        }
                     }
-                }
-            );
-            log.info('Baidu response: ', resp);
-        } catch (err) {
-            log.erroe('Baidu submitting error: ', err);
-        }
+                );
+                this.log.info('Baidu response: ', resp);
+            } catch (err) {
+                this.log.erroe('Baidu submitting error: ', err);
+            }
 
-        log.info("===== Submitting Baidu urls done.  =====\n");
-    } else {
-        log.info("Skip Baidu.\n");
+            this.log.info("===== Submitting Baidu urls done.  =====\n");
+        } else {
+            this.log.info("Skip Baidu.\n");
+        }
     }
 }
 
-module.exports = BaiduMain;
+module.exports = Baidu;
