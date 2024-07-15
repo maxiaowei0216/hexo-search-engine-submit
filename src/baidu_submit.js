@@ -27,7 +27,7 @@ class Baidu extends SearchEngineBase {
                 );
                 this.log.info('Baidu response: ', resp);
             } catch (err) {
-                this.log.erroe('Baidu submitting error: ', err);
+                this.log.error('Baidu submitting error: ', err);
             }
 
             this.log.info("===== Submitting Baidu urls done.  =====\n");

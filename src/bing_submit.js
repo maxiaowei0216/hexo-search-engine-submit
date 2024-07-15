@@ -33,7 +33,7 @@ class Bing extends SearchEngineBase {
                     );
                     this.log.info('Bing response: ', resp);
                 } catch (err) {
-                    this.log.erroe('Bing submitting error: ', err);
+                    this.log.error('Bing submitting error: ', err);
                 }
             }
             this.log.info("===== Submitting Bing urls done.  =====\n");
