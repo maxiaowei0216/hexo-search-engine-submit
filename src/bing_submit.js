@@ -8,8 +8,13 @@ class Bing extends SearchEngineBase {
 
     async submit(host) {
         let { token, count } = this.config;
-        token = token ?? process.env.BING_TOKEN;
+        token = token || process.env.BING_TOKEN;
         count = count ?? this.count;
+
+        if(token.length == 0) {
+            this.log.error('Bing token is invalid, please set it within the _config.yml or via environment variable BING_TOKEN');
+            return;
+        }
 
         if (count > 0) {
             this.log.info("===== Submitting Bing urls start. =====");
@@ -31,7 +36,7 @@ class Bing extends SearchEngineBase {
                             }
                         }
                     );
-                    this.log.info('Bing response: ', resp);
+                    this.log.info('Bing response: ', resp.data);
                 } catch (err) {
                     this.log.error('Bing submitting error: ', err);
                 }

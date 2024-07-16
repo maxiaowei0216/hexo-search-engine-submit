@@ -8,8 +8,13 @@ class Baidu extends SearchEngineBase {
 
     async submit(host) {
         let { token, count } = this.config;
-        token = token ?? process.env.BAIDU_TOKEN;
+        token = token || process.env.BAIDU_TOKEN;
         count = count ?? this.count;
+
+        if(token.length == 0) {
+            this.log.error('Baidu token is invalid, please set it within the _config.yml or via environment variable BAIDU_TOKEN');
+            return;
+        }
 
         if (count > 0) {
             this.log.info("===== Submitting Baidu urls start. =====");
@@ -25,7 +30,7 @@ class Baidu extends SearchEngineBase {
                         }
                     }
                 );
-                this.log.info('Baidu response: ', resp);
+                this.log.info('Baidu response: ', resp.data);
             } catch (err) {
                 this.log.error('Baidu submitting error: ', err);
             }
