@@ -35,7 +35,7 @@ class Google extends SearchEngineBase {
     }
 
     async submit(host) {
-        let count  = this.config.count;
+        let count = this.config.count;
         count = count ?? this.count;
         this.log.info(`Google submit count is ${count}`);
 
