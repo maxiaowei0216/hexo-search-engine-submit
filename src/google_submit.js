@@ -14,44 +14,65 @@ class Google extends SearchEngineBase {
         });
     }
 
-    async #submitUrlToIndexingAPI(url) {
+    async #submitUrlBatch(urls, batchSize = 100) {
         const indexing = google.indexing({
             auth: this.auth,
             version: 'v3'
         });
 
-        try {
-            const resp = await indexing.urlNotifications.publish({
-                requestBody: {
-                    url: url,
-                    type: 'URL_UPDATED'
-                }
-            });
-            return resp.data;
-        } catch (error) {
-            this.log.error('Error submitting URL to Indexing API:', error);
-            // throw error;
+        const results = [];
+        const errors = [];
+
+        // Process URLs in chunks
+        for (let i = 0; i < urls.length; i += batchSize) {
+            const chunk = urls.slice(i, i + batchSize);
+            const promises = chunk.map(url => 
+                indexing.urlNotifications.publish({
+                    requestBody: {
+                        url: url,
+                        type: 'URL_UPDATED'
+                    }
+                }).catch(error => {
+                    errors.push({ url, error });
+                    return null;
+                })
+            );
+
+            const responses = await Promise.all(promises);
+            results.push(...responses.filter(r => r !== null));
+            
+            // Add a small delay between batches to avoid rate limiting
+            if (i + batchSize < urls.length) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
         }
+
+        return { results, errors };
     }
 
     async submit(host) {
         let count = this.config.count;
         count = count ?? this.count;
-        this.log.info(`Google submit count is ${count}`);
+        const submitCount = Math.min(count, this.urls.length);
 
-        if (count > 0) {
-            this.log.info("===== Submitting Google urls start. =====");
-            for (let i = 0; i < count && i < this.urls.length; ++i) {
-                let url = this.urls[i];
+        if (submitCount > 0) {
+            this.log.info(`===== Submitting ${submitCount} Google urls start. =====`);
+            
+            const urlsToSubmit = this.urls.slice(0, submitCount);
+            this.log.info('Google urls to submit:');
+            urlsToSubmit.forEach(url => this.log.info(url));
 
-                this.log.info("Google submitting: " + url);
-                try {
-                    const resp = await this.#submitUrlToIndexingAPI(url);
-                    this.log.info('Google response: ', resp);
-                } catch (err) {
-                    this.log.error('Google submitting error: ', err);
-                }
+            const { results, errors } = await this.#submitUrlBatch(urlsToSubmit);
+            
+            // Log results
+            this.log.info(`Successfully submitted ${results.length} URLs`);
+            if (errors.length > 0) {
+                this.log.error(`Failed to submit ${errors.length} URLs:`);
+                errors.forEach(({ url, error }) => {
+                    this.log.error(`URL: ${url}, Error: ${error.message}`);
+                });
             }
+
             this.log.info("===== Submitting Google urls done.  =====\n");
         } else {
             this.log.info('Skip Google.\n');
