@@ -64,7 +64,12 @@ class Bing extends SearchEngineBase {
                 );
                 this.log.info('Bing batch submission response: ', resp.data);
             } catch (err) {
-                this.log.error('Bing batch submission error: ', err);
+                if (err.response) {
+                    this.log.error('Bing batch submission error: ', err.response.data);
+                }
+                else {
+                    this.log.error('Bing batch submission error: ', err.message);
+                }
             }
 
             this.log.info("===== Submitting Bing urls done.  =====\n");

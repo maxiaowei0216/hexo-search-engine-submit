@@ -11,7 +11,7 @@ class Baidu extends SearchEngineBase {
         token = token || process.env.BAIDU_TOKEN;
         count = count ?? this.count;
 
-        if(token.length == 0) {
+        if (token.length == 0) {
             this.log.error('Baidu token is invalid, please set it within the _config.yml or via environment variable BAIDU_TOKEN');
             return;
         }
@@ -30,9 +30,15 @@ class Baidu extends SearchEngineBase {
                         }
                     }
                 );
-                this.log.info('Baidu response: ', resp.data);
+                this.log.info('Baidu submission response: ', resp.data);
             } catch (err) {
-                this.log.error('Baidu submitting error: ', err);
+                if (err.response) {
+                    this.log.error('Baidu submission error: ', err.response.data);
+                }
+                else {
+                    this.log.error('Baidu submission error: ', err.message);
+                }
+
             }
 
             this.log.info("===== Submitting Baidu urls done.  =====\n");
