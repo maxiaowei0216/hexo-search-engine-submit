@@ -71,8 +71,9 @@ class Bing extends SearchEngineBase {
                     this.log.error('Bing batch submission error: ', err.message);
                 }
             }
-
-            this.log.info("===== Submitting Bing urls done.  =====\n");
+            finally {
+                this.log.info("===== Submitting Bing urls done.  =====\n");
+            }
         } else {
             this.log.info("Skip Bing.\n");
         }

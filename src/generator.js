@@ -3,7 +3,7 @@ module.exports = function (locals) {
     const config = this.config.search_engine_submit;
 
     var urlsPath = config.file_path;
-    log.info("Generating urls ...");
+    // log.info("Generating urls ...");
 
     const count = Math.max(config.google.count, config.bing.count, config.baidu.count)
     // get last posts
